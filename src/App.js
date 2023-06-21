@@ -1,4 +1,4 @@
-import axios, { all } from "axios";
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -24,15 +24,19 @@ function App() {
       setSearchStatus("");
       return "";
     }
-    const result = pepList.filter(person => {
-      if (person.name && person.name.includes(event.target.value)) {
-        return person;
-      }
+    setSearchStatus(event.target.value)
 
-      return "";
-    });
-
-    setSearchStatus(result);
+    setTimeout(() => {
+      const result = pepList.filter(person => {
+        if (person.name && person.name.includes(event.target.value)) {
+          return person;
+        }
+  
+        return "";
+      });
+  
+      setSearchStatus(result);
+    }, 500)
   }
 
   return (
@@ -50,22 +54,24 @@ function App() {
             let index = 0;
             for(const person of searchStatus) {
               allResults.push(
-              <div id={index} style={{borderBottom: "1px solid black", margin: "1rem", paddingBlockEnd: "1rem"}}>
-                <div><h2><strong>ИМЕ: </strong> {person.name}</h2></div>
+              <div id={index} style={{margin: "1rem", paddingBlockEnd: "1rem"}}>
+                { person?.name ?<div><h2><strong>ИМЕ: </strong> {person.name}</h2></div> : ""}
                 <div style={{display: "grid", gap: "50px", gridTemplateColumns: "1fr 1fr 1fr 1fr"}}>
                 { (() => {
-                  const jobInformation = [];
-                  let index = 0;
-                  for (const job of person.history) {
-                    jobInformation.push(<div id={index} style={{border: "1px solid red", display: "flex", flexFlow: "column"}}>
-                      <p><strong>ГОДИНА: { job.year }</strong></p>
-                      <p><strong>ЗАЕМАНА ПОЗИЦИЯ: { job.position }</strong></p>
-                      <p><strong>КАТЕГОРИЯ НА ПОЗИЦИЯТА: { job.category }</strong></p>
-                      <p><strong>ИНСТИТУЦИЯ НА РАБОТА: { job.institution }</strong></p>
-                    </div>)
+                  if (person.history) {
+                    const jobInformation = [];
+                    let index = 0;
+                      for (const job of person.history) {
+                        jobInformation.push(<div id={index} style={{border: "1px solid red", display: "flex", flexFlow: "column"}}>
+                          <p><strong>ГОДИНА: { job.year }</strong></p>
+                          <p><strong>ЗАЕМАНА ПОЗИЦИЯ: { job.position }</strong></p>
+                          <p><strong>КАТЕГОРИЯ НА ПОЗИЦИЯТА: { job.category }</strong></p>
+                          <p><strong>ИНСТИТУЦИЯ НА РАБОТА: { job.institution }</strong></p>
+                        </div>)
+                      }
+    
+                      return jobInformation;
                   }
-
-                  return jobInformation;
                 })()}
                 </div>
               </div>)
